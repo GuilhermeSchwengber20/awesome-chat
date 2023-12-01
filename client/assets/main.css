@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;700&display=swap');
+
+
+* {
+    margin: 0px;
+    padding: 0px;
+    outline: 0;
+    box-sizing: border-box;
+
+    font-family: 'Sora', sans-serif;
+}
+
+p, label, span, small {
+    color: var(--white-dark);
+}
+:root {
+    --soft-dark: #181920;
+    --soft-black: #1B1F27;
+    --white-dark: #edeaef;
+
+    --primary: #4371FC;
+    --bg-button: #5568FE;
+    --warning-normal: #FFF549;
+
+    --soft-gray-border: #292929;
+}
+
+img {
+    width: 100%;
+}
+
+
+*::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Cor do thumb */
+    border-radius: 4px; /* Borda arredondada */
+  }
+  
+  *::-webkit-scrollbar-track {
+    background-color: transparent; /* Cor do track (fundo) */
+  }
