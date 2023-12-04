@@ -9,8 +9,4 @@ export default {
             msg: payload.msg
         }
     },
-
-    setReciverMessage(state, payload) {
-        state.Receiver = payload;
-    }
 }

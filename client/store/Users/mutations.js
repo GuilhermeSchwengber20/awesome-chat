@@ -5,5 +5,14 @@ export default {
     },
     handleUpdateUsers(state, users) {
         state.content = users.map(user => new User(user));
+    },
+    userLogout(state) {
+        state.connected = new User({});
+        state.content = [];
+        state.Receiver = {}
+    },
+    
+    setReciverMessage(state, payload) {
+        state.Receiver = payload;
     }
 }

@@ -1,4 +1,3 @@
-import User from "models/User"
 
 export default () => ({
     API_URL: "http://localhost:3000",
@@ -7,5 +6,4 @@ export default () => ({
         type: "",
         msg: ""
     },
-    Receiver: new User({})
 })

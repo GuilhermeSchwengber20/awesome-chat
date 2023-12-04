@@ -11,18 +11,20 @@
 }
 
 p, label, span, small {
-    color: var(--white-dark);
+  color: var(--white-dark);
 }
+
 :root {
-    --soft-dark: #181920;
-    --soft-black: #1B1F27;
-    --white-dark: #edeaef;
+  --soft-dark: #181920;
+  --soft-black: #1B1F27;
+  --white-dark: #edeaef;
 
-    --primary: #4371FC;
-    --bg-button: #5568FE;
-    --warning-normal: #FFF549;
+  --primary: #4371FC;
+  --bg-button: #5568FE;
+  --warning-normal: #FFF549;
 
-    --soft-gray-border: #292929;
+  --soft-gray-border: #292929;
+  --primary-box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; 
 }
 
 img {

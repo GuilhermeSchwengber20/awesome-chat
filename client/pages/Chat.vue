@@ -4,20 +4,22 @@
             <div class="content-menu">
                 <div class="content-options">
                     <span>
-                        Úsuario: {{ `${User.username || ""}`.toUpperCase() }}
+                        {{ `${User.username || ""}`.toUpperCase() }}
                     </span>
-                    <span>
-                        <a>Sair</a>
+                    <span @click="logOutUser">
+                        <i class="fas fa-sign-out-alt fa-1x"></i>
                     </span>
                 </div>
                 <div class="active-messages">
                     <div 
-                        class="user-card"
+                        class="user-card capitalize"
                         v-for="(user, index) in Users" :key="index"
                         @click="setReciverMessage(user)"
                     >
-                        <div class="img_test"></div>
-                        <span>{{ user.username }}</span>
+                    <span class="info-user">
+                            <span :class="`status ${user.isConnected ? 'connected' : ''}`"></span>
+                            <span class="username">{{ user.username }}</span>
+                        </span>
                     </div>
                 </div>
 
@@ -25,7 +27,7 @@
             <div class="content-chat" v-if="UserReceiver.id">
                 <div class="container-user-selected">
                     <div class="img_test"></div>
-                    <span>{{ UserReceiver.username }}</span>
+                    <span class="capitalize">{{ UserReceiver.username }}</span>
                 </div>
                 <div class="inner-scroll" ref="chatContainer">
                     <div class="container-messages" >
@@ -60,8 +62,6 @@ export default {
     data() {
         return {
             message: "",
-            currentMessages: [],
-
             shouldScrollToBottom: true,
         }
     },
@@ -69,32 +69,28 @@ export default {
         shouldScrollToBottom() {
             this.$nextTick(() => {
                 this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
-                console.log(this.$refs.chatContainer.scrollTop);
             });
         },
     },
     beforeMount() {
-        this.$store.dispatch("Users/getAllUsers");
+        this.getAllUsers()
     },
 
     mounted() {
-        const socket = this.$socket;
-
-        
-        socket.on('private message', (data) => {
-            this.currentMessages.push({
-                content: data.message,
-            })
-        });
+        this.updateUserSuccessful();
+        this.registerMessageEvent();
     },
 
     computed: {
+        currentMessages() {
+            return this.$store.state.Messages.currentMessages;
+        },
         User() {
             return this.$store.state.Users.connected
         },
         
         UserReceiver() {
-            return this.$store.state.Receiver;
+            return this.$store.state.Users.Receiver;
         },
 
         Users() {
@@ -104,26 +100,76 @@ export default {
     },
 
     methods: {
+        updateUserSuccessful() {
+            const socket = this.$socket;
+
+            socket.on("updateSuccessful", () => {
+                this.getAllUsers();
+            })
+        },
+        async getAllUsers() {
+            await this.$store.dispatch("Users/getAllUsers");
+        },
+
+        updateUserConnected(userId, isConnected) {
+            const socket = this.$socket;
+            socket.emit("userLoged", {
+                userId,
+                isConnected
+            })
+        },
+
+        logOutUser() {
+            this.updateUserConnected(this.User.id, false);
+            this.updateUserSuccessful();
+            this.$store.commit("Users/userLogout");
+            this.$router.push("/");
+        },
+
+        registerMessageEvent() {
+            const socket = this.$socket;
+            socket.on('private message', (data) => {
+                this.currentMessages.push({
+                    content: data.message,
+                })
+            });
+        },
+        
         setReciverMessage(user) {
-            this.$store.commit("setReciverMessage", user)
+            this.$store.commit("Users/setReciverMessage", user)
             this.$store.dispatch("Messages/getByUser", {
                 recipientUserId: this.UserReceiver.id,
                 userId: this.User.id
-            })
+            });
+            this.$store.commit("Messages/resetMessages");
+
+            setTimeout(() => {
+                this.scrollToBottom();
+            }, 150);
         },
 
         sendPrivateMessage() {
             const socket = this.$socket;
             const recipientUserId = this.UserReceiver.id;
             const message = this.message
-            this.currentMessages.push({
-                owner: true,
-                content: message,
-            });
             this.$forceUpdate();
             this.message = "";
             this.scrollToBottom();
-            socket.emit("private message", { recipientUserId, message })
+            socket.emit("private message", { 
+                recipientUserId, 
+                message, 
+                userId: this.User.id,
+                username: this.User.username
+            });
+            // TALVEZ GERAR O TIMESTAMP AQUI NO FRONT??
+            this.$store.commit("Messages/addCurrentMessage", {
+                user_id: this.User.id,
+                username: this.User.username,
+                content: message,
+                owner: true,
+                recipient_user_id: recipientUserId,
+            })
+
         },
 
         scrollToBottom() {
@@ -145,7 +191,7 @@ export default {
   display: flex;
   border-radius: 25px;
   background-color: var(--soft-black);
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  box-shadow: var(--primary-box-shadow);
 }
 
 .content-menu{
@@ -160,8 +206,8 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    height: 8vh;
-    padding: 10px 10px;
+    height: 12vh;
+    padding: 20px 25px;
 
 }
 
@@ -174,24 +220,49 @@ export default {
 }
 
 .img_test{
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 45px;
+    min-height: 45px;
     background-color: var(--soft-dark);
     border-radius: 50%;
+    box-shadow: var(--primary-box-shadow);
 }
 .user-card{
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 5px 10px;
+    padding: 10px;
     border-bottom: 1px solid var(--soft-gray-border);
     cursor: pointer;
 }
 
+.info-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.info-user .username {
+    width: 100px;
+}
+
+.status {
+    width: 10px;
+    height: 10px;
+    background-color: var(--soft-dark);
+    box-shadow: var(--primary-box-shadow);
+    border-radius: 50%;
+}
+
+.status.connected{
+    background-color: green;
+}
 .content-chat{
     width: 100%;
 }
 
+.capitalize {
+    text-transform: capitalize;
+}
 
 .container-type-message {
     width: 100%;
@@ -230,8 +301,6 @@ export default {
     background: radial-gradient(circle, rgba(67,113,252,0.5) 0%, rgba(24,25,32,0.5) 100%);
 }
 .container-messages{
-
-    
     width: 100%;
     flex-direction: column;
     gap: 10px;
@@ -258,7 +327,7 @@ export default {
 .container-user-selected{
     display: flex;
     flex-direction: row;
-    height: 50px;
+    height: 10vh;
     align-items: center;
     gap: 10px;
     border-bottom: 1px solid var(--soft-gray-border);

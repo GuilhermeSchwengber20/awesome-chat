@@ -75,6 +75,14 @@ export default {
   },
 
   methods: {
+    updateUserConnected(userId) {
+        const socket = this.$socket;
+        socket.emit("userLoged", {
+            userId,
+            isConnected: true
+        })
+    },
+
     changeView(view) {
         this.clearForm();
         this.view = view;
@@ -103,11 +111,10 @@ export default {
         this.User = this.User.userLogin(this.User);
         const res = await this.$store.dispatch("Users/login", this.User);
         if(res?.success) {
-            this.$socket.emit("login", {
-                userId: res.data.id,
-                username: res.data.username
-            })
-            this.$router.push("/chat")
+            this.updateUserConnected(this.$store.state.Users.connected.id)
+            setTimeout(() => {
+                this.$router.push("/chat");
+            }, 150);
         }
         this.User = new User({});
     },

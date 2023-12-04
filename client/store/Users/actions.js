@@ -1,7 +1,7 @@
 export default {
     async getAllUsers(context, payload) {
         const res = await this.$axios.$get("/api/users");
-
+        console.log(res);
         if(!res.error) {
             context.commit("handleUpdateUsers", res)
         }
