@@ -1,5 +1,6 @@
 const pool = require("../db");
 
+
 async function getUsers() {
     const client = await pool.connect();
 
