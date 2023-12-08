@@ -1,15 +1,19 @@
+const { json } = require("express");
 const pool = require("../db")
 
 async function handleUserConnected(io, socket, data) {
-    const { userId, isConnected } = data;
+    console.log(data)
+    const { userId, isConnected, username } = data;
 
     const client = await pool.connect();
 
+    socket.data = {userId, username};
     try {
         await client.query(
             "UPDATE users SET is_connected = $1 WHERE id = $2", [isConnected, userId]
         )
-
+        socket.data.userId = userId;
+        console.log(socket.data);
         socket.emit("updateSuccessful");
         console.log(`Status isConnected do usuário ${userId} atualizado para ${isConnected}`);
 
@@ -30,15 +34,23 @@ async function handlePrivateMessage(io, socket, data) {
         username
     } = data;
 
+
+    const client = await pool.connect();
+   
     const recipientSocket = Array.from(io.sockets.sockets.values()).find(
         (s) => s.data && s.data.userId === recipientUserId
     );
-
-    const client = await pool.connect();
-
+    
     console.log("Usuario que enviou:", socket.data.userId);
     console.log("Usuario que recebeu:", recipientUserId);
-
+    if (recipientSocket) {
+        recipientSocket.emit('private message', {
+            userId,
+            recipientUserId,
+            username,
+            message,
+        });
+    }
     try {
         await client.query(
             `
@@ -52,13 +64,14 @@ async function handlePrivateMessage(io, socket, data) {
     } finally {
         client.release();
     }
-
-    if (recipientSocket) {
-        recipientSocket.emit("private message", {
-            senderUserId: socket.data.userId,
-            message
-        })
-    }
+    
+    // console.log("recipientSocket", recipientSocket);
+    // if (recipientSocket) {
+    //     recipientSocket.emit("private message", {
+    //         recipientUserId,
+    //         message
+    //     })
+    // }
 
 }
 function handleDisconnect() {
