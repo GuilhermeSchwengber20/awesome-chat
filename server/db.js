@@ -7,7 +7,7 @@ const pool = new Pool ({
     database: 'awesomechat_jdbs',
     password: 'HnFzb5FG2BRyGNPZo4TETjWrjPSI7I80',
     port: 5432,
-    sll: true
+    ssl: true
 });
 
 module.exports = pool;
