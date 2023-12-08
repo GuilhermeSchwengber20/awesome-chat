@@ -68,7 +68,9 @@ export default {
     watch: {
         shouldScrollToBottom() {
             this.$nextTick(() => {
-                this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+                if(this.$refs.chatContainer) {
+                    this.$refs.chatContainer.scrollTop = this.$refs?.chatContainer?.scrollHeight;
+                }
             });
         },
     },
@@ -129,10 +131,15 @@ export default {
         registerMessageEvent() {
             const socket = this.$socket;
             socket.on('private message', (data) => {
-                this.currentMessages.push({
+                console.log("aqui")
+                this.$store.commit("Messages/addCurrentMessage", {
                     content: data.message,
+                    recipient_user_id: data.recipientUserId,
+                    username: this.User.username,
+                    user_id: this.User.id
                 })
             });
+            this.scrollToBottom();
         },
         
         setReciverMessage(user) {
@@ -152,7 +159,6 @@ export default {
             const socket = this.$socket;
             const recipientUserId = this.UserReceiver.id;
             const message = this.message
-            this.$forceUpdate();
             this.message = "";
             this.scrollToBottom();
             socket.emit("private message", { 
@@ -161,7 +167,6 @@ export default {
                 userId: this.User.id,
                 username: this.User.username
             });
-            // TALVEZ GERAR O TIMESTAMP AQUI NO FRONT??
             this.$store.commit("Messages/addCurrentMessage", {
                 user_id: this.User.id,
                 username: this.User.username,

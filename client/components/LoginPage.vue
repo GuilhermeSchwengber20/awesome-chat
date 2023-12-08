@@ -75,12 +75,14 @@ export default {
   },
 
   methods: {
-    updateUserConnected(userId) {
+    updateUserConnected({userId, username}) {
         const socket = this.$socket;
         socket.emit("userLoged", {
             userId,
+            username,
             isConnected: true
-        })
+        });
+        return;
     },
 
     changeView(view) {
@@ -111,10 +113,8 @@ export default {
         this.User = this.User.userLogin(this.User);
         const res = await this.$store.dispatch("Users/login", this.User);
         if(res?.success) {
-            this.updateUserConnected(this.$store.state.Users.connected.id)
-            setTimeout(() => {
-                this.$router.push("/chat");
-            }, 150);
+            this.updateUserConnected({userId: this.$store.state.Users.connected.id, username: this.$store.state.Users.connected.username})
+            this.$router.push("/chat");
         }
         this.User = new User({});
     },
