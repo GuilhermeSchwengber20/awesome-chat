@@ -1,8 +1,6 @@
-import Vue from 'vue';
-import io from 'socket.io-client';
+import Vue from "vue";
+import io from "socket.io-client";
 
-
-
-const socket = io('https://awesomechat-api.onrender.com/'); 
+const socket = io("http://localhost:3030");
 
 Vue.prototype.$socket = socket;
