@@ -92,7 +92,6 @@ export default {
       this.view = view;
       const registerButton = document.getElementById("cadastrar");
       const loginButton = document.getElementById("login");
-
       if (view === "login") {
         if (registerButton.classList.contains("selected")) {
           registerButton.classList.remove("selected");
@@ -111,8 +110,21 @@ export default {
       this.User = new User({});
     },
 
+    async registerUser() {
+      try {
+        const res = await this.$store.dispatch("Users/register", this.User);
+        if (res.success) {
+          this.changeView("login");
+        }
+      } catch (error) {}
+    },
+
     async loginAutenticate() {
-      this.User = this.User.userLogin(this.User);
+      if (this.view === "cadastrar") {
+        return this.registerUser();
+      }
+      if (!this.User.username || !this.User.password) return;
+      this.User = this.User?.userLogin(this.User);
       const res = await this.$store.dispatch("Users/login", this.User);
       if (res?.success) {
         this.updateUserConnected({
@@ -260,5 +272,22 @@ export default {
 }
 .container-buttons button.selected {
   background-color: var(--primary);
+}
+
+@media screen and (max-width: 400px) {
+  .image-inspiration-content {
+    display: none;
+  }
+
+  .container-section {
+    padding: 0px;
+  }
+  .content-login {
+    width: 100%;
+  }
+
+  .container-inputs {
+    height: 55vh;
+  }
 }
 </style>

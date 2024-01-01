@@ -1,7 +1,7 @@
 <template>
   <div class="container-section">
     <div class="content-page">
-      <div class="content-menu">
+      <div class="content-menu" ref="contentMenu">
         <div class="content-options">
           <span>
             {{ `${User.username || ""}`.toUpperCase() }}
@@ -28,6 +28,11 @@
       </div>
       <div class="content-chat" v-if="UserReceiver.id">
         <div class="container-user-selected">
+          <i
+            class="fas fa-ellipsis-v fa-2x"
+            id="button-menu"
+            @click="handleMenuUsers"
+          ></i>
           <div class="img_test"></div>
           <span class="capitalize">{{ UserReceiver.username }}</span>
         </div>
@@ -108,6 +113,10 @@ export default {
   },
 
   methods: {
+    handleMenuUsers() {
+      this.$refs.contentMenu.classList.toggle("active-menu");
+    },
+
     updateUserSuccessful() {
       const socket = this.$socket;
 
@@ -137,7 +146,6 @@ export default {
     registerMessageEvent() {
       const socket = this.$socket;
       socket.on("private message", (data) => {
-        console.log("aqui");
         this.$store.commit("Messages/addCurrentMessage", {
           content: data.message,
           recipient_user_id: data.recipientUserId,
@@ -253,6 +261,10 @@ export default {
   width: 100px;
 }
 
+i {
+  color: #fff;
+}
+
 .status {
   width: 10px;
   height: 10px;
@@ -347,5 +359,47 @@ export default {
 
 .container-user-selected .img_test {
   border: 1px solid var(--white-dark);
+}
+
+#button-menu {
+  display: none;
+}
+@media screen and (max-width: 400px) {
+  #button-menu {
+    display: inline;
+  }
+  .container-section {
+    padding: 0px;
+  }
+  .content-page {
+    border-radius: 0px;
+  }
+
+  .content-menu {
+    position: absolute;
+    z-index: 999;
+    background-color: var(--soft-black);
+    left: -300px;
+  }
+  .inner-scroll {
+    height: 80vh;
+  }
+
+  .active-menu {
+    position: absolute;
+    left: 0;
+    width: 100%;
+  }
+  .container-type-message {
+    padding: 0px;
+  }
+
+  .container-type-message input {
+    width: 75%;
+  }
+
+  .container-type-message button {
+    width: 20%;
+  }
 }
 </style>

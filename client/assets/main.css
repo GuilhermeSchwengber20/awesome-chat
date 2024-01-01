@@ -1,46 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;700&display=swap");
 
 * {
-    margin: 0px;
-    padding: 0px;
-    outline: 0;
-    box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  outline: 0;
+  box-sizing: border-box;
 
-    font-family: 'Sora', sans-serif;
+  font-family: "Sora", sans-serif;
 }
 
-p, label, span, small {
+p,
+label,
+span,
+small {
   color: var(--white-dark);
 }
 
 :root {
   --soft-dark: #181920;
-  --soft-black: #1B1F27;
+  --soft-black: #1b1f27;
   --white-dark: #edeaef;
 
-  --primary: #4371FC;
-  --bg-button: #5568FE;
-  --warning-normal: #FFF549;
+  --primary: #4371fc;
+  --bg-button: #5568fe;
+  --warning-normal: #fff549;
+  --success-normal: #3cc513;
+  /* DEPOIS TROCAR A VARIAVEL SUCESS */
 
   --soft-gray-border: #292929;
-  --primary-box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; 
+  --primary-box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 img {
-    width: 100%;
+  width: 100%;
 }
 
-
 *::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  *::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2); /* Cor do thumb */
-    border-radius: 4px; /* Borda arredondada */
-  }
-  
-  *::-webkit-scrollbar-track {
-    background-color: transparent; /* Cor do track (fundo) */
-  }
+  width: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Cor do thumb */
+  border-radius: 4px; /* Borda arredondada */
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent; /* Cor do track (fundo) */
+}
