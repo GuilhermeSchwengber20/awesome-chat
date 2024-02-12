@@ -49,18 +49,9 @@ async function loginUser(username, password) {
         error: false,
         mensagem: "Usuário não encontrado!",
       };
-    }
-
-    const match = await bcrypt.compare(password, result.rows[0].password);
-    if (match) {
-      return {
-        id: result.rows[0].id,
-        username: result.rows[0].username,
-      };
     } else {
       return {
-        error: false,
-        mensagem: "Login ou senha inválidos, favor verificar",
+        username: result.rows[0].username,
       };
     }
   } catch (error) {
