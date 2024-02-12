@@ -25,7 +25,9 @@ async function loginUser(username) {
         )
 
         if(result.rows.length === 0) {
-            return null;
+            return {
+                mensagem: "Não foi possivel encontrar um usuario"
+            };
         }
 
         return {
