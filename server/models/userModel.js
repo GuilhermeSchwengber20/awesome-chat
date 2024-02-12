@@ -50,8 +50,13 @@ async function loginUser(username, password) {
         mensagem: "Usuário não encontrado!",
       };
     } else {
+      const user = result.rows[0];
+
       return {
-        username: result.rows[0].username,
+        username: user.username,
+        id: user.id,
+        password: user.password,
+        email: user?.email,
       };
     }
   } catch (error) {
