@@ -11,19 +11,13 @@
           </span>
         </div>
         <div class="active-messages">
-          <div
-            class="user-card capitalize"
+          <user-info
             v-for="(user, index) in Users"
             :key="index"
-            @click="setReciverMessage(user)"
+            :user="user"
+            @setReciverMessage="setReciverMessage"
           >
-            <span class="info-user">
-              <span
-                :class="`status ${user.isConnected ? 'connected' : ''}`"
-              ></span>
-              <span class="username">{{ user.username }}</span>
-            </span>
-          </div>
+          </user-info>
         </div>
       </div>
       <div class="content-chat" v-if="UserReceiver.id">
@@ -175,12 +169,14 @@ export default {
       const message = this.message;
       this.message = "";
       this.scrollToBottom();
+
       socket.emit("private message", {
         recipientUserId,
         message,
         userId: this.User.id,
         username: this.User.username,
       });
+
       this.$store.commit("Messages/addCurrentMessage", {
         user_id: this.User.id,
         username: this.User.username,
@@ -242,40 +238,11 @@ export default {
   border-radius: 50%;
   box-shadow: var(--primary-box-shadow);
 }
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  border-bottom: 1px solid var(--soft-gray-border);
-  cursor: pointer;
-}
-
-.info-user {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.info-user .username {
-  width: 100px;
-}
 
 i {
   color: #fff;
 }
 
-.status {
-  width: 10px;
-  height: 10px;
-  background-color: var(--soft-dark);
-  box-shadow: var(--primary-box-shadow);
-  border-radius: 50%;
-}
-
-.status.connected {
-  background-color: green;
-}
 .content-chat {
   width: 100%;
 }

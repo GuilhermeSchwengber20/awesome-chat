@@ -1,14 +1,10 @@
 <template>
-  <LoginPage/>
+  <LoginPage />
 </template>
 
 <script>
 export default {
-  name: 'IndexPage',
-  mounted() {
-    console.log("URL DO BACKEND:", this.$config.BACKEND_URL);
-  }
-}
+  name: "IndexPage",
+};
 </script>
-<style>
-</style>
+<style></style>

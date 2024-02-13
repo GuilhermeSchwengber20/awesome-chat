@@ -20,7 +20,6 @@ const backendURL =
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    // origin: ""
     origin: frontEndURL,
   },
 });
@@ -72,6 +71,6 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Seu servidor esta rodando em http://localhost${PORT}`);
-  console.log(`Seu FRONT END AGORA É ${frontEndURL}`);
+  console.log(`Seu servidor esta rodando em [${backendURL}]`);
+  console.log(`Seu client esta rodando em [${frontEndURL}]`);
 });
